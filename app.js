@@ -11,8 +11,33 @@ var tweetsRouter = require('./routes/tweets');
 var app = express();
 
 const cors = require('cors');
-app.use(cors());
 
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Replace 'allowedOrigins' with your specific origins for production
+        const allowedOrigins = [
+        "https://tweetapp-frontend.vercel.app",
+        "http://localhost:3001"
+        ];
+        if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+        } else {
+        callback(new Error('Not allowed by CORS'));
+        }
+    },
+    allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Accept',
+        'Authorization',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+  
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
